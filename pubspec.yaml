@@ -32,7 +32,6 @@ flutter:
 
   assets:
     - assets/images/
-    - assets/videos/
     - assets/food.png
 
 flutter_icons:
