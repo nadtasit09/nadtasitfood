@@ -11,30 +11,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. ดึง source code จาก GitHub
+      # 1. ดึง source code
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      # 2. ติดตั้ง Flutter
+      # 2. ติดตั้ง Flutter (เวอร์ชันที่เสถียรสำหรับการสอน)
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.19.0'   # ปรับตามเวอร์ชันที่สอน
+          flutter-version: '3.19.0'
           channel: 'stable'
 
-      # 3. ตรวจสอบ Flutter environment
+      # 3. ปิด analytics (กัน warning)
+      - name: Disable Flutter analytics
+        run: flutter config --no-analytics
+
+      # 4. ตรวจ Flutter
       - name: Flutter doctor
         run: flutter doctor
 
-      # 4. ดึง package จาก pubspec.yaml
+      # 5. ยอมรับ Android licenses
+      - name: Accept Android licenses
+        run: yes | flutter doctor --android-licenses
+
+      # 6. ดึง dependencies
       - name: Install dependencies
         run: flutter pub get
 
-      # 5. Build APK (Debug หรือ Release)
+      # 7. Build APK (Debug)
       - name: Build APK
         run: flutter build apk --debug
 
-      # 6. เก็บไฟล์ APK เป็น Artifact
+      # 8. เก็บไฟล์ APK
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
