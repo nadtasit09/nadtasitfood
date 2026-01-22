@@ -1,0 +1,42 @@
+name: Flutter CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. ดึง source code จาก GitHub
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      # 2. ติดตั้ง Flutter
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.19.0'   # ปรับตามเวอร์ชันที่สอน
+          channel: 'stable'
+
+      # 3. ตรวจสอบ Flutter environment
+      - name: Flutter doctor
+        run: flutter doctor
+
+      # 4. ดึง package จาก pubspec.yaml
+      - name: Install dependencies
+        run: flutter pub get
+
+      # 5. Build APK (Debug หรือ Release)
+      - name: Build APK
+        run: flutter build apk --debug
+
+      # 6. เก็บไฟล์ APK เป็น Artifact
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: flutter-apk
+          path: build/app/outputs/flutter-apk/app-debug.apk
